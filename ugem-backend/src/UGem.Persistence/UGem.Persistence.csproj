@@ -2,6 +2,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UGem.Application\UGem.Application.csproj" />
+    <ProjectReference Include="..\UGem.Domain\UGem.Domain.csproj" />
+    <ProjectReference Include="..\UGem.Infrastructure\UGem.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.4" />
   </ItemGroup>
 
   <PropertyGroup>

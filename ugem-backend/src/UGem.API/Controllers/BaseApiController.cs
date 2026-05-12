@@ -9,9 +9,19 @@ namespace UGem.API.Controllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
-    protected readonly ISender Sender;
+    protected readonly ISender Mediator;
 
-    protected BaseApiController(ISender sender) => Sender = sender;
+    protected BaseApiController(ISender mediator) => Mediator = mediator;
+
+    protected IActionResult HandleFailure(Result result)
+    {
+        if (result.IsSuccess)
+        {
+            throw new InvalidOperationException();
+        }
+
+        return MapFailure(result.Error);
+    }
 
     protected IActionResult HandleResult<T>(Result<T> result)
     {

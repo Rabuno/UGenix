@@ -26,6 +26,6 @@ public class SensitiveDataMaskingEnricher : ILogEventEnricher
 
     private static bool IsSensitive(string propertyName)
     {
-        return MaskedProperties.Any(p => propertyName.Contains(p, StringComparer.OrdinalIgnoreCase));
+        return MaskedProperties.Any(p => propertyName.Contains(p, StringComparison.OrdinalIgnoreCase));
     }
 }

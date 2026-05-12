@@ -15,15 +15,13 @@ export const voucherApi = {
    * Fetch available vouchers for a restaurant.
    */
   getByRestaurant: async (restaurantId: string): Promise<Voucher[]> => {
-    const { data } = await api.get<Voucher[]>(`/v1/voucher/restaurant/${restaurantId}`);
-    return data;
+    return await api.get<Voucher[]>(`/v1/voucher/restaurant/${restaurantId}`) as any;
   },
 
   /**
    * Purchase a voucher.
    */
   purchase: async (voucherId: string): Promise<{ orderId: string; status: string }> => {
-    const { data } = await api.post<{ orderId: string; status: string }>('/v1/voucher/purchase', { voucherId });
-    return data;
+    return await api.post<{ orderId: string; status: string }>('/v1/voucher/purchase', { voucherId }) as any;
   },
 };

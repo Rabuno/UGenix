@@ -71,8 +71,8 @@ api.interceptors.request.use(
 // Response Interceptor: Unwrapping & Error Handling
 api.interceptors.response.use(
   (response) => {
-    // Automatic unwrapping of ApiEnvelope
-    return response.data;
+    // Automatic unwrapping of ApiEnvelope matching backend structure { data: T, meta: ... }
+    return response.data?.data ?? response.data;
   },
   async (error: AxiosError<ProblemDetails>) => {
     const originalRequest = error.config as any;

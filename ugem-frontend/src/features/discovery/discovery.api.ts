@@ -12,10 +12,17 @@ export interface DiscoveryPlace {
   isTrending: boolean;
 }
 
+export interface PagedListMetadata {
+  startCursor: string | null;
+  endCursor: string | null;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  totalCount: number;
+}
+
 export interface PagedList<T> {
   items: T[];
-  nextCursor: string | null;
-  hasMore: boolean;
+  metadata: PagedListMetadata;
 }
 
 export const discoveryApi = {

@@ -1,12 +1,14 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UGem.API.Abstractions;
 using UGem.Application.Features.Reviews;
 using UGem.Shared.Abstractions;
 
-namespace UGem.Api.Controllers;
+namespace UGem.API.Controllers;
 
 [ApiVersion("1.0")]
-public class ReviewController : BaseApiController
+public class ReviewController(MediatR.ISender mediator) : BaseApiController(mediator)
 {
     /// <summary>
     /// Submit a new review for a restaurant.
@@ -27,9 +29,7 @@ public class ReviewController : BaseApiController
 
         var result = await Mediator.Send(command);
 
-        return result.IsSuccess 
-            ? Ok(result.Value) 
-            : HandleFailure(result);
+        return HandleResult<Guid>(result);
     }
 }
 

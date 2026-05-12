@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using UGem.Application.Abstractions;
+using UGem.Shared.Abstractions;
 
 namespace UGem.Infrastructure.Caching;
 

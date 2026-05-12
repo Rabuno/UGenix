@@ -32,25 +32,19 @@ public class SupabaseOptions : ICriticalConfiguration
 public class JwtOptions : ICriticalConfiguration
 {
     [Required]
-    public string ActiveKeyId { get; set; } = "k1";
+    public string Secret { get; set; } = string.Empty;
 
-    [Required, MinLength(32)]
-    public string ActiveSecretKey { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Dictionary of KeyId -> Secret for validation.
-    /// Allows for retired keys to remain valid until all tokens expire.
-    /// </summary>
-    public Dictionary<string, string> ValidationKeys { get; set; } = new();
-    
     [Required]
     public string Issuer { get; set; } = string.Empty;
-    
+
     [Required]
     public string Audience { get; set; } = string.Empty;
-    
-    [Range(1, 1440)]
-    public int ExpireMinutes { get; set; }
+
+    [Range(1, 10080)]
+    public int AccessTokenExpirationMinutes { get; set; } = 60;
+
+    [Range(1, 43200)]
+    public int RefreshTokenExpirationDays { get; set; } = 7;
 }
 
 public class CloudinaryOptions : ISensitiveConfiguration

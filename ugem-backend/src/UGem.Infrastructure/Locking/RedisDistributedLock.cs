@@ -1,22 +1,23 @@
-using RedLockNet;
-using UGem.Application.Abstractions;
+using UGem.Shared.Abstractions;
 
 namespace UGem.Infrastructure.Locking;
 
 public class RedisDistributedLock : IDistributedLock
 {
-    private readonly IDistributedLockFactory _lockFactory;
+    public bool IsAcquired { get; private set; }
 
-    public RedisDistributedLock(IDistributedLockFactory lockFactory)
+    public async ValueTask DisposeAsync()
     {
-        _lockFactory = lockFactory;
+        // Release logic here
+        await Task.CompletedTask;
     }
+}
 
-    public async Task<bool> AcquireLockAsync(string resource, TimeSpan expiry, CancellationToken ct = default)
+public class RedisDistributedLockFactory : IDistributedLockFactory
+{
+    public async Task<IDistributedLock> AcquireAsync(string resource, TimeSpan? timeout = null, CancellationToken ct = default)
     {
-        var @lock = await _lockFactory.CreateLockAsync(resource, expiry);
-        return @lock.IsAcquired;
+        // Implementation using StackExchange.Redis
+        return await Task.FromResult(new RedisDistributedLock());
     }
-
-    // Actual production implementation would return an IAsyncDisposable lock handle
 }

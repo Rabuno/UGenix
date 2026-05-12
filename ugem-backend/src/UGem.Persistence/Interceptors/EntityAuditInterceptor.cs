@@ -4,28 +4,15 @@ using UGem.Shared.Abstractions;
 
 namespace UGem.Persistence.Interceptors;
 
-public interface ISoftDeletable
-{
-    bool IsDeleted { get; }
-    DateTime? DeletedAtUtc { get; }
-    void Delete(DateTime now);
-}
-
-public interface IAuditable
-{
-    DateTime CreatedAtUtc { get; }
-    UserId? CreatedBy { get; }
-    DateTime? LastModifiedAtUtc { get; }
-    UserId? LastModifiedBy { get; }
-}
-
-public class SoftDeleteInterceptor : SaveChangesInterceptor
+public class EntityAuditInterceptor : SaveChangesInterceptor
 {
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly ICurrentUser _currentUser;
 
-    public SoftDeleteInterceptor(IDateTimeProvider dateTimeProvider)
+    public EntityAuditInterceptor(IDateTimeProvider dateTimeProvider, ICurrentUser currentUser)
     {
         _dateTimeProvider = dateTimeProvider;
+        _currentUser = currentUser;
     }
 
     public override InterceptionResult<int> SavingChanges(
@@ -49,12 +36,21 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
-        foreach (var entry in context.ChangeTracker.Entries<ISoftDeletable>())
+        var now = _dateTimeProvider.UtcNow;
+        var userId = new UserId(_currentUser.UserId);
+
+        foreach (var entry in context.ChangeTracker.Entries<IAuditable>())
         {
-            if (entry.State == EntityState.Deleted)
+            if (entry.State == EntityState.Added)
             {
-                entry.State = EntityState.Modified;
-                entry.Entity.Delete(_dateTimeProvider.UtcNow);
+                entry.Property(nameof(IAuditable.CreatedAtUtc)).CurrentValue = now;
+                entry.Property(nameof(IAuditable.CreatedBy)).CurrentValue = userId;
+            }
+
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+            {
+                entry.Property(nameof(IAuditable.LastModifiedAtUtc)).CurrentValue = now;
+                entry.Property(nameof(IAuditable.LastModifiedBy)).CurrentValue = userId;
             }
         }
     }

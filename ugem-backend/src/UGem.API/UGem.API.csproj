@@ -4,17 +4,25 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>ugem-api-secrets</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.26" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UGem.Application\UGem.Application.csproj" />
-    <ProjectReference Include="..\UGem.Persistence\UGem.Persistence.csproj" />
     <ProjectReference Include="..\UGem.Infrastructure\UGem.Infrastructure.csproj" />
+    <ProjectReference Include="..\UGem.Persistence\UGem.Persistence.csproj" />
+    <ProjectReference Include="..\UGem.Application\UGem.Application.csproj" />
+    <ProjectReference Include="..\UGem.Domain\UGem.Domain.csproj" />
   </ItemGroup>
 
 </Project>

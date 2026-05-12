@@ -23,15 +23,10 @@ public record GetNearbyRestaurantsQuery(
 public class GetNearbyRestaurantsHandler 
     : IRequestHandler<GetNearbyRestaurantsQuery, Result<PagedList<DiscoveryReadModel>>>
 {
-    // Implementation uses IReadDbContext and WithinSafeDistance spatial extensions
     public Task<Result<PagedList<DiscoveryReadModel>>> Handle(
         GetNearbyRestaurantsQuery request, 
         CancellationToken ct)
     {
-        // 1. Validate Radius
-        // 2. Query ReadModel with Spatial Filter
-        // 3. Apply Ranking (Trending > Rating > Distance)
-        // 4. Return Cursor-paginated result
         return Task.FromResult(Result<PagedList<DiscoveryReadModel>>.Failure(Error.None));
     }
 }

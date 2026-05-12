@@ -6,7 +6,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // MediatR, FluentValidation, etc. will be added here in future phases
+        services.AddMediatR(config => 
+        {
+            config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+        });
         return services;
     }
 }

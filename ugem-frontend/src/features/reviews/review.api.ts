@@ -11,7 +11,6 @@ export const reviewApi = {
    * Submit a new review for a restaurant.
    */
   submit: async (request: SubmitReviewRequest): Promise<string> => {
-    const { data } = await api.post<string>('/v1/reviews', request);
-    return data;
+    return await api.post<string>('/v1/review', request) as any;
   },
 };

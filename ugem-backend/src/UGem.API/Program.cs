@@ -1,20 +1,22 @@
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using UGem.Api.Extensions;
-using UGem.Api.Middleware;
+using UGem.API.Extensions;
+using UGem.API.Middleware;
 using UGem.Application;
 using UGem.Infrastructure;
+using UGem.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Core Services Integration
 builder.Services
     .AddInfrastructure(builder.Configuration)
+    .AddPersistence(builder.Configuration)
     .AddApplication();
 
 // 2. API Standard Services
 builder.Services.AddControllers();
-builder.Services.AddApiVersioningConfig();
+builder.Services.AddUGemVersioning();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

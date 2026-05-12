@@ -1,11 +1,13 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using UGem.API.Abstractions;
 using UGem.Application.Features.Discovery;
 using UGem.Shared.Abstractions;
 
-namespace UGem.Api.Controllers;
+namespace UGem.API.Controllers;
 
 [ApiVersion("1.0")]
-public class DiscoveryController : BaseApiController
+public class DiscoveryController(MediatR.ISender mediator) : BaseApiController(mediator)
 {
     /// <summary>
     /// Search for places within a specific radius based on geolocation.
@@ -24,12 +26,10 @@ public class DiscoveryController : BaseApiController
             lat, 
             lng, 
             radius, 
-            new CursorPaginationRequest(cursor, limit));
+            new CursorPaginationRequest(cursor != null ? new Cursor(cursor) : null, null, limit));
 
         var result = await Mediator.Send(query);
 
-        return result.IsSuccess 
-            ? Ok(result.Value) 
-            : HandleFailure(result);
+        return HandleResult<PagedList<DiscoveryReadModel>>(result);
     }
 }

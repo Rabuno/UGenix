@@ -3,7 +3,7 @@ using System.Net;
 using System.Text.Json;
 using UGem.Shared.Abstractions;
 
-namespace UGem.Api.Middleware;
+namespace UGem.API.Middleware;
 
 public class ExceptionHandlingMiddleware
 {

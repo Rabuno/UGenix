@@ -1,19 +1,9 @@
 using NetTopologySuite.Geometries;
+using UGem.Domain.Abstractions;
 
 namespace UGem.Domain.Entities;
 
-public abstract class BaseEntity
-{
-    public Guid Id { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime? LastModifiedAt { get; set; }
-    public string? LastModifiedBy { get; set; }
-    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
-    public bool IsDeleted { get; set; }
-}
-
-public class Restaurant : BaseEntity
+public class Restaurant : BaseEntity, IAggregateRoot
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -27,7 +17,4 @@ public class Restaurant : BaseEntity
     public int ReviewCount { get; set; }
     
     public Guid MerchantId { get; set; }
-    
-    // Concurrency Token
-    public uint Version { get; set; } 
 }

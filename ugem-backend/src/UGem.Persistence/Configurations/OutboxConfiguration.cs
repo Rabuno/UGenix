@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UGem.Domain.Abstractions;
+using UGem.Persistence.Outbox;
 
 namespace UGem.Persistence.Configurations;
 

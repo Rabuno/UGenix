@@ -1,4 +1,4 @@
-using BC = BCrypt.Net.BCrypt;
+using BCrypt.Net;
 
 namespace UGem.Infrastructure.Security;
 
@@ -15,11 +15,11 @@ public class PasswordHasher : IPasswordHasher
 
     public string HashPassword(string password)
     {
-        return BC.HashPassword(password, WorkFactor);
+        return BCrypt.Net.BCrypt.HashPassword(password, WorkFactor);
     }
 
     public bool VerifyPassword(string password, string hash)
     {
-        return BC.Verify(password, hash);
+        return BCrypt.Net.BCrypt.Verify(password, hash);
     }
 }

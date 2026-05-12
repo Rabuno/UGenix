@@ -6,10 +6,7 @@ public interface IDomainEvent
     DateTime OccurredOnUtc { get; }
 }
 
-public abstract record DomainEvent(Guid Id, DateTime OccurredOnUtc) : IDomainEvent
-{
-    protected DomainEvent() : this(Guid.NewGuid(), DateTime.UtcNow) { }
-}
+public abstract record DomainEvent(Guid Id, DateTime OccurredOnUtc) : IDomainEvent;
 
 public abstract class BaseEntity
 {

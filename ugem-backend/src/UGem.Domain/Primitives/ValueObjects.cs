@@ -46,6 +46,8 @@ public sealed class Email : ValueObject
     {
         yield return Value;
     }
+
+    public static implicit operator string(Email email) => email.Value;
 }
 
 public sealed class Money : ValueObject

@@ -8,14 +8,10 @@ namespace UGem.Persistence;
 
 public sealed class ApplicationDbContext : DbContext
 {
-    private readonly EntityAuditInterceptor _auditInterceptor;
-
     public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options,
-        EntityAuditInterceptor auditInterceptor)
+        DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
-        _auditInterceptor = auditInterceptor;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,10 +22,5 @@ public sealed class ApplicationDbContext : DbContext
         // (Handled via ValueConverters in detailed configuration)
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.AddInterceptors(_auditInterceptor);
     }
 }

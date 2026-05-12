@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace UGem.Shared.Abstractions;
@@ -8,10 +9,24 @@ public interface IStronglyTypedId
     Guid Value { get; }
 }
 
-public abstract readonly record struct StronglyTypedId<TValue>(Guid Value) : IStronglyTypedId
-    where TValue : struct, IStronglyTypedId
+public readonly record struct StronglyTypedId<TValue>(Guid Value) : IStronglyTypedId
 {
     public override string ToString() => Value.ToString();
+}
+
+// JSON Converter for Strongly Typed IDs
+public class StronglyTypedIdJsonConverter<T> : JsonConverter<T> where T : struct, IStronglyTypedId
+{
+    public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var guid = reader.GetGuid();
+        return (T)Activator.CreateInstance(typeToConvert, guid)!;
+    }
+
+    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.Value);
+    }
 }
 
 // Domain Specific IDs
@@ -34,6 +49,3 @@ public readonly record struct VoucherId(Guid Value) : IStronglyTypedId
 {
     public static VoucherId New() => new(Guid.NewGuid());
 }
-
-// NOTE: Custom JsonConverter and TypeConverter implementation is omitted here for brevity 
-// but is required for Swagger/API compatibility in a real setup.

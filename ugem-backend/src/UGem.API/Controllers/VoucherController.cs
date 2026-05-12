@@ -1,12 +1,13 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UGem.Domain.Entities;
 using UGem.Shared.Abstractions;
 
-namespace UGem.Api.Controllers;
+namespace UGem.API.Controllers;
 
 [ApiVersion("1.0")]
-public class VoucherController : BaseApiController
+public class VoucherController(MediatR.ISender mediator) : BaseApiController(mediator)
 {
     /// <summary>
     /// Get available vouchers for a specific restaurant.

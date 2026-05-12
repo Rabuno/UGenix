@@ -18,18 +18,15 @@ public static class DiagnosticsConfiguration
             loggingBuilder.ClearProviders();
             loggingBuilder.AddSerilog(new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.Seq("http://ugem-seq:5341") // Centralized logs
                 .CreateLogger());
         });
 
-        // 2. OpenTelemetry Tracing
+        // 2. OpenTelemetry Tracing (core instrumentation only - no beta packages)
         services.AddOpenTelemetry()
             .WithTracing(tracing => tracing
                 .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
-                .AddEntityFrameworkCoreInstrumentation()
-                .AddRedisInstrumentation()
                 .AddOtlpExporter());
 
         return services;

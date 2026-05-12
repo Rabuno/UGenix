@@ -1,10 +1,11 @@
+using UGem.Domain.Abstractions;
 using UGem.Shared.Abstractions;
 
 namespace UGem.Domain.Entities;
 
 public enum VoucherStatus { Available, SoldOut, Expired }
 
-public class Voucher : BaseEntity
+public class Voucher : BaseEntity, IAggregateRoot
 {
     public Guid RestaurantId { get; private set; }
     public string Code { get; private set; } = string.Empty;
@@ -25,9 +26,8 @@ public class Voucher : BaseEntity
         int stock, 
         DateTime expiresAt)
     {
-        return new Voucher
+        var voucher = new Voucher
         {
-            Id = Guid.NewGuid(),
             RestaurantId = restaurantId,
             Code = code,
             Price = price,
@@ -37,12 +37,14 @@ public class Voucher : BaseEntity
             Status = VoucherStatus.Available,
             ExpiresAt = expiresAt
         };
+        
+        return voucher;
     }
 
     public Result Purchase()
     {
-        if (RemainingStock <= 0) return Result.Failure(new Error("Voucher.SoldOut", "No stock remaining"));
-        if (ExpiresAt < DateTime.UtcNow) return Result.Failure(new Error("Voucher.Expired", "Voucher has expired"));
+        if (RemainingStock <= 0) return Result.Failure(new Error("Voucher.SoldOut", "No stock remaining", ErrorType.Validation));
+        if (ExpiresAt < DateTime.UtcNow) return Result.Failure(new Error("Voucher.Expired", "Voucher has expired", ErrorType.Validation));
 
         RemainingStock--;
         if (RemainingStock == 0) Status = VoucherStatus.SoldOut;

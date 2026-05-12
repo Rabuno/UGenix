@@ -11,31 +11,28 @@ public record SubmitReviewCommand(
     string IpAddress,
     string UserAgent) : IRequest<Result<Guid>>;
 
+// Handler
+
 public class SubmitReviewHandler : IRequestHandler<SubmitReviewCommand, Result<Guid>>
 {
     private readonly IRepository<Review> _reviewRepository;
-    private readonly IUserContext _userContext;
+    private readonly ICurrentUser _currentUser;
 
-    public SubmitReviewHandler(IRepository<Review> reviewRepository, IUserContext userContext)
+    public SubmitReviewHandler(IRepository<Review> reviewRepository, ICurrentUser currentUser)
     {
         _reviewRepository = reviewRepository;
-        _userContext = userContext;
+        _currentUser = currentUser;
     }
 
     public async Task<Result<Guid>> Handle(SubmitReviewCommand request, CancellationToken ct)
     {
-        // 1. Check if user already reviewed this restaurant (Business Invariant)
-        // Note: Simplified for this phase
-        
-        // 2. Create Review with Anti-Fraud Metadata
         var review = Review.Create(
             request.RestaurantId,
-            _userContext.UserId,
+            _currentUser.UserId,
             request.Rating,
             request.Comment,
-            request.IpAddress,
             request.UserAgent,
-            isVerified: false // Default to unverified until check-in link confirmed
+            request.IpAddress
         );
 
         await _reviewRepository.AddAsync(review, ct);

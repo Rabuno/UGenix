@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UGem.Infrastructure.Options;
 using Microsoft.Extensions.Options;
+using UGem.Shared.Abstractions;
 
 namespace UGem.Infrastructure.Security;
 
