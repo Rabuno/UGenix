@@ -4,7 +4,7 @@ services:
     name: ugenix-api
     env: docker
     dockerContext: ugenix-backend
-    dockerfilePath: src/UGenix.API/Dockerfile
+    dockerfilePath: ugenix-backend/src/UGenix.API/Dockerfile
     plan: free
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
@@ -24,7 +24,7 @@ services:
     name: ugenix-web
     env: docker
     dockerContext: ugenix-frontend
-    dockerfilePath: Dockerfile
+    dockerfilePath: ugenix-frontend/Dockerfile
     plan: free
     envVars:
       - key: VITE_API_BASE_URL
