@@ -9,10 +9,12 @@ services:
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
-      - fromDatabase:
+      - key: ConnectionStrings__Database
+        fromDatabase:
           name: ugem-db
           property: connectionString
-      - fromService:
+      - key: ConnectionStrings__Redis
+        fromService:
           type: redis
           name: ugem-redis
           property: connectionString
@@ -25,7 +27,7 @@ services:
     dockerfilePath: Dockerfile
     plan: free
     envVars:
-      - key: VITE_API_URL
+      - key: VITE_API_BASE_URL
         fromService:
           type: web
           name: ugem-api
