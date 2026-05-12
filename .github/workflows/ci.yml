@@ -1,4 +1,4 @@
-name: UGem CI
+name: UGenix CI
 
 on:
   push:
@@ -16,11 +16,11 @@ jobs:
         with:
           dotnet-version: 9.0.x
       - name: Restore dependencies
-        run: dotnet restore ugem-backend/UGem.sln
+        run: dotnet restore ugenix-backend/UGenix.sln
       - name: Build
-        run: dotnet build ugem-backend/UGem.sln --no-restore
+        run: dotnet build ugenix-backend/UGenix.sln --no-restore
       - name: Test
-        run: dotnet test ugem-backend/UGem.sln --no-build --verbosity normal
+        run: dotnet test ugenix-backend/UGenix.sln --no-build --verbosity normal
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -31,8 +31,9 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: cd ugem-frontend && npm install
+        run: cd ugenix-frontend && npm install
       - name: Lint
-        run: cd ugem-frontend && npm run lint
+        run: cd ugenix-frontend && npm run lint
       - name: Build
-        run: cd ugem-frontend && npm run build
+        run: cd ugenix-frontend && npm run build
+

@@ -44,7 +44,7 @@ UGenix is a production-grade platform engineered for real-time spatial discovery
 ### 2. Run with Docker (Full Stack)
 ```bash
 git clone https://github.com/Rabuno/UGenix.git
-cd UGenix/ugem-backend
+cd UGenix/ugenix-backend
 docker-compose up --build -d
 ```
 Access the application at: `http://localhost`
@@ -69,3 +69,4 @@ UGenix is built for production from day one:
 ---
 
 Developed by **Lead Staff Engineer** @ UGenix Team.
+
