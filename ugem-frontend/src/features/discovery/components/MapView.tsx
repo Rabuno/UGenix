@@ -6,13 +6,16 @@ import { Cluster } from '../map/cluster';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vietmapgl: any;
   }
 }
 
 const MapView: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
   const { center, radius } = useDiscoveryStore();
 
@@ -38,6 +41,7 @@ const MapView: React.FC = () => {
         mapRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 2. Batch Update Render for Clusters/Markers
@@ -103,7 +107,6 @@ const MapView: React.FC = () => {
     if (!mapRef.current || !center) return;
 
     const sourceId = 'search-radius';
-    const vietmapgl = window.vietmapgl;
 
     // Simplified circle GeoJSON generator
     const generateCircle = (lat: number, lng: number, rad: number) => {

@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { MapPin, Navigation, Star, TrendingUp, Search, Sliders } from 'lucide-react';
-import { discoveryApi } from './discovery.api';
+import { MapPin, Star, Search, Sliders } from 'lucide-react';
+import { discoveryApi, DiscoveryPlace } from './discovery.api';
 import { useDiscoveryStore } from './discovery.store';
 import MapView from './components/MapView';
-import { clsx } from 'clsx';
 
 export default function DiscoveryPage() {
   const { radius, setRadius, setResults, center, setCenter } = useDiscoveryStore();
@@ -86,7 +85,7 @@ export default function DiscoveryPage() {
   );
 }
 
-function PlaceListCard({ place }: { place: any }) {
+function PlaceListCard({ place }: { place: DiscoveryPlace }) {
   return (
     <div className="glass-card p-4 flex gap-4 hover:border-indigo-500/50 transition-all cursor-pointer group">
       <div className="w-24 h-24 bg-indigo-900/20 rounded-xl shrink-0 flex items-center justify-center">
@@ -105,46 +104,6 @@ function PlaceListCard({ place }: { place: any }) {
           <span className="text-gray-500 text-[10px]">({place.reviewCount})</span>
         </div>
         <p className="text-gray-400 text-xs line-clamp-1">{place.description}</p>
-      </div>
-    </div>
-  );
-}
-
-function PlaceCard({ place }: { place: any }) {
-  return (
-    <div className="glass-card overflow-hidden group hover:border-indigo-500/50 transition-all duration-300">
-      {/* Placeholder Image with Gradient Overlay */}
-      <div className="h-40 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 relative">
-        <div className="absolute top-4 right-4 flex gap-2">
-          {place.isTrending && (
-            <div className="bg-indigo-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 uppercase tracking-wider">
-              <TrendingUp className="w-3 h-3" />
-              Trending
-            </div>
-          )}
-        </div>
-        <div className="absolute bottom-4 left-4 flex items-center gap-2 text-xs font-medium text-white/80 bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg">
-          <Navigation className="w-3 h-3 text-indigo-400" />
-          {(place.distanceMeters / 1000).toFixed(1)} km away
-        </div>
-      </div>
-      
-      <div className="p-6 space-y-4">
-        <div>
-          <h3 className="text-xl font-bold group-hover:text-indigo-400 transition-colors">{place.name}</h3>
-          <p className="text-gray-400 text-sm line-clamp-2 mt-1">{place.description}</p>
-        </div>
-
-        <div className="flex items-center justify-between pt-2 border-t border-white/5">
-          <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-            <span className="font-bold">{place.averageRating}</span>
-            <span className="text-gray-500 text-xs">({place.reviewCount} reviews)</span>
-          </div>
-          <button className="text-indigo-400 text-sm font-semibold hover:underline">
-            View Details
-          </button>
-        </div>
       </div>
     </div>
   );

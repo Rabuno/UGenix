@@ -6,7 +6,11 @@ import { GridClusteringStrategy, Cluster } from './cluster';
  * useMapSync: Controlled synchronization hook between Zustand and VietMap GL.
  * Implements render throttling, viewport culling, and batch updates.
  */
-export const useMapSync = (mapRef: any, onUpdate: (clusters: Cluster[]) => void) => {
+export const useMapSync = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapRef: React.MutableRefObject<any>, 
+  onUpdate: (clusters: Cluster[]) => void
+) => {
   const { results, center, radius } = useDiscoveryStore();
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const clusterer = useRef(new GridClusteringStrategy());
@@ -50,11 +54,13 @@ export const useMapSync = (mapRef: any, onUpdate: (clusters: Cluster[]) => void)
     // Initial and store-triggered updates
     throttledUpdate();
 
+    const currentMap = mapRef.current;
+
     return () => {
       if (updateTimeoutRef.current) clearTimeout(updateTimeoutRef.current);
-      if (mapRef.current) {
-        mapRef.current.off('moveend', throttledUpdate);
-        mapRef.current.off('zoomend', throttledUpdate);
+      if (currentMap) {
+        currentMap.off('moveend', throttledUpdate);
+        currentMap.off('zoomend', throttledUpdate);
       }
     };
   }, [results, center, radius, mapRef, onUpdate]);

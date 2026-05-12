@@ -1,4 +1,4 @@
-import api, { ApiEnvelope } from '../../api/client';
+import api from '../../api/client';
 
 export interface DiscoveryPlace {
   id: string;

@@ -35,11 +35,15 @@ const api: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
 // Variables for Token Refresh Mutex/Queue
 let isRefreshing = false;
-let failedQueue: Array<{ resolve: (token: string) => void; reject: (error: any) => void }> = [];
+let failedQueue: Array<{ resolve: (token: string) => void; reject: (error: unknown) => void }> = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -75,10 +79,10 @@ api.interceptors.response.use(
     return response.data?.data ?? response.data;
   },
   async (error: AxiosError<ProblemDetails>) => {
-    const originalRequest = error.config as any;
+    const originalRequest = error.config as CustomAxiosRequestConfig;
 
     // Handle 401 Unauthorized (Token Refresh Mutex Logic)
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
       
       if (isRefreshing) {
         // Queue the request until refresh is complete

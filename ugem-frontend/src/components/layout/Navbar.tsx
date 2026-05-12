@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Map, Ticket, User, LayoutGrid, Sparkles } from 'lucide-react';
+import { Map, Ticket, User, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 
 export default function Navbar() {

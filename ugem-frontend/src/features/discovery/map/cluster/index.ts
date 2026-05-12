@@ -12,7 +12,7 @@ export type Cluster = {
  * Clustering Strategy Interface
  */
 export interface IClusteringStrategy {
-  getClusters(points: DiscoveryPlace[], zoom: number, bounds: any): Cluster[];
+  getClusters(points: DiscoveryPlace[], zoom: number, bounds: unknown): Cluster[];
 }
 
 /**
@@ -21,7 +21,7 @@ export interface IClusteringStrategy {
 export class GridClusteringStrategy implements IClusteringStrategy {
   private cellSize: number = 60; // Grid cell size in pixels
 
-  getClusters(points: DiscoveryPlace[], zoom: number, bounds: any): Cluster[] {
+  getClusters(points: DiscoveryPlace[], zoom: number, _bounds: unknown): Cluster[] {
     if (zoom > 16) {
       // Don't cluster at high zoom levels
       return points.map(p => ({
