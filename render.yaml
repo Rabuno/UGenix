@@ -1,0 +1,46 @@
+services:
+  # 1. Backend API (Dockerized)
+  - type: web
+    name: ugem-api
+    env: docker
+    dockerContext: ugem-backend
+    dockerfilePath: src/UGem.API/Dockerfile
+    plan: free
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - fromDatabase:
+          name: ugem-db
+          property: connectionString
+      - fromService:
+          type: redis
+          name: ugem-redis
+          property: connectionString
+
+  # 2. Frontend + Nginx (Dockerized)
+  - type: web
+    name: ugem-web
+    env: docker
+    dockerContext: ugem-frontend
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: ugem-api
+          property: host
+    # Nginx acts as the entry point here
+
+  # 3. Redis (Cache)
+  - type: redis
+    name: ugem-redis
+    plan: free
+    ipAllowList: [] # Only internal access
+
+databases:
+  # 4. PostGIS Database
+  - name: ugem-db
+    plan: free
+    databaseName: ugem
+    user: ugem_admin

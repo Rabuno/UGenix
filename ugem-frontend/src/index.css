@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --secondary: #ec4899;
+  --accent: #8b5cf6;
+  --background: #030712;
+  --surface: #111827;
+  --surface-light: #1f2937;
+  --text: #f9fafb;
+  --text-muted: #9ca3af;
+  
+  --glass-bg: rgba(17, 24, 39, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@layer base {
+  body {
+    @apply bg-[#030712] text-gray-50 font-['Outfit',sans-serif] antialiased selection:bg-indigo-500/30;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-gray-900/70 backdrop-blur-lg border border-white/10 shadow-xl rounded-2xl;
+  }
+  
+  .glass-nav {
+    @apply sticky top-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-white/5;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/20 active:scale-95;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all;
+  }
+}
+
+/* Custom Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-950;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-800 rounded-full hover:bg-gray-700 transition-colors;
+}

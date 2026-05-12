@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  ugem-db:
+    image: postgis/postgis:15-3.3
+    container_name: ugem-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ugem-internal
+
+  ugem-redis:
+    image: redis:7.0-alpine
+    container_name: ugem-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ugem-internal
+
+  ugem-seq:
+    image: datalust/seq:latest
+    container_name: ugem-seq
+    restart: always
+    environment:
+      ACCEPT_EULA: Y
+    ports:
+      - "5341:80"
+    networks:
+      - ugem-internal
+
+  ugem-api:
+    build:
+      context: .
+      dockerfile: src/UGem.API/Dockerfile
+    container_name: ugem-api
+    depends_on:
+      ugem-db:
+        condition: service_healthy
+      ugem-redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: 1001:1001
+    tmpfs:
+      - /tmp
+      - /app/logs
+    ports:
+      - "5000:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ugem-internal
+
+  ugem-web:
+    build:
+      context: ../ugem-frontend
+      dockerfile: Dockerfile
+    container_name: ugem-web
+    ports:
+      - "80:80"
+    depends_on:
+      - ugem-api
+    networks:
+      - ugem-internal
+
+networks:
+  ugem-internal:
+    driver: bridge
+
+volumes:
+  postgres_data:

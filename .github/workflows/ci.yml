@@ -1,0 +1,38 @@
+name: UGem CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore dependencies
+        run: dotnet restore ugem-backend/UGem.sln
+      - name: Build
+        run: dotnet build ugem-backend/UGem.sln --no-restore
+      - name: Test
+        run: dotnet test ugem-backend/UGem.sln --no-build --verbosity normal
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: cd ugem-frontend && npm install
+      - name: Lint
+        run: cd ugem-frontend && npm run lint
+      - name: Build
+        run: cd ugem-frontend && npm run build
