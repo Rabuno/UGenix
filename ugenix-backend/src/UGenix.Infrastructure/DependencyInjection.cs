@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UGenix.Infrastructure.Options;
+using UGenix.Application.Abstractions;
 
 namespace UGenix.Infrastructure;
 
@@ -32,6 +33,7 @@ public static class DependencyInjection
 
         // Security
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IIdentityService, IdentityService>();
 
         // Shared Services
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();

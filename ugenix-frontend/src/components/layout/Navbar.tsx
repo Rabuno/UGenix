@@ -4,6 +4,8 @@ import { Map, Ticket, User, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
 import { ActiveOverlay } from '../../store/ui.store';
 
+import { useAuthStore } from '../../store/auth.store';
+
 interface NavbarProps {
   onOpenOverlay: (type: ActiveOverlay) => void;
 }
@@ -16,6 +18,8 @@ interface NavItem {
 }
 
 export default function Navbar({ onOpenOverlay }: NavbarProps) {
+  const { user, isAuthenticated, clearAuth } = useAuthStore();
+  
   const navItems: NavItem[] = [
     { to: '/discovery', icon: Map, label: 'Discovery' },
     { to: '/marketplace', icon: Ticket, label: 'Marketplace' },
@@ -59,12 +63,26 @@ export default function Navbar({ onOpenOverlay }: NavbarProps) {
           ))}
         </div>
 
-        <button 
-          onClick={() => onOpenOverlay('auth')}
-          className="btn-primary py-1.5 px-4 text-xs"
-        >
-          Connect Wallet
-        </button>
+        <div className="flex items-center gap-4">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-4">
+              <span className="text-xs text-gray-400 font-medium hidden sm:inline-block">{user?.email}</span>
+              <button 
+                onClick={() => clearAuth()}
+                className="text-xs font-bold text-red-400 hover:text-red-300 transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={() => onOpenOverlay('auth')}
+              className="btn-primary py-1.5 px-4 text-xs"
+            >
+              Sign In
+            </button>
+          )}
+        </div>
       </div>
     </nav>
   );

@@ -1,12 +1,7 @@
 using BCrypt.Net;
+using UGenix.Shared.Abstractions;
 
 namespace UGenix.Infrastructure.Security;
-
-public interface IPasswordHasher
-{
-    string HashPassword(string password);
-    bool VerifyPassword(string password, string hash);
-}
 
 public class PasswordHasher : IPasswordHasher
 {

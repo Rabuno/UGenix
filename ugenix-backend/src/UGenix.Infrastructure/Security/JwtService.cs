@@ -6,14 +6,9 @@ using System.Text;
 using UGenix.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using UGenix.Shared.Abstractions;
+using UGenix.Application.Abstractions;
 
 namespace UGenix.Infrastructure.Security;
-
-public interface IJwtService
-{
-    string GenerateAccessToken(UserId userId, string email, IEnumerable<string> permissions);
-    string GenerateRefreshToken();
-}
 
 public class JwtService : IJwtService
 {

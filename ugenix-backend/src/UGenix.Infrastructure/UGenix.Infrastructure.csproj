@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UGenix.Application\UGenix.Application.csproj" />
+    <ProjectReference Include="..\UGenix.Persistence\UGenix.Persistence.csproj" />
     <ProjectReference Include="..\UGenix.Shared\UGenix.Shared.csproj" />
   </ItemGroup>
 

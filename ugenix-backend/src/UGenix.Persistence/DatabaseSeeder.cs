@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using UGenix.Domain.Entities;
-using UGenix.Infrastructure.Security;
+using UGenix.Shared.Abstractions;
 using UGenix.Shared.Constants;
 
 namespace UGenix.Persistence;

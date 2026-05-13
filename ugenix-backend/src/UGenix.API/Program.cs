@@ -68,7 +68,7 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var passwordHasher = scope.ServiceProvider.GetRequiredService<UGenix.Infrastructure.Security.IPasswordHasher>();
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<UGenix.Shared.Abstractions.IPasswordHasher>();
     
     // Apply migrations
     await Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.MigrateAsync(context.Database);

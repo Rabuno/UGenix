@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using Konscious.Security.Cryptography;
 using System.Text;
+using UGenix.Shared.Abstractions;
 
 namespace UGenix.Infrastructure.Security;
 

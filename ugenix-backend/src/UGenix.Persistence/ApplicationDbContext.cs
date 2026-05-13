@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using UGenix.Infrastructure.Options;
 using UGenix.Persistence.Interceptors;
 using NetTopologySuite.Geometries;
 using UGenix.Domain.Entities;
