@@ -28,10 +28,7 @@ services:
     plan: free
     envVars:
       - key: VITE_API_BASE_URL
-        fromService:
-          type: web
-          name: ugenix-api
-          property: host
+        value: /api
       - key: API_URL
         fromService:
           type: web
