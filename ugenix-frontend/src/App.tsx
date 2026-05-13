@@ -7,6 +7,7 @@ import AuthModal from './features/auth/AuthModal';
 import MarketplacePage from './features/vouchers/MarketplacePage';
 import ProfilePage from './features/profile/ProfilePage';
 import { useUIStore, ActiveOverlay } from './store/ui.store';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,9 +49,30 @@ function App() {
       <main className="relative z-10 w-full max-w-7xl mx-auto px-6 py-10 flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/discovery" element={<DiscoveryPage />} />
-          <Route path="/marketplace" element={<MarketplacePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route 
+            path="/discovery" 
+            element={
+              <ProtectedRoute>
+                <DiscoveryPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/marketplace" 
+            element={
+              <ProtectedRoute>
+                <MarketplacePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </main>
 
