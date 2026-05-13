@@ -18,5 +18,5 @@ COPY nginx.conf /etc/nginx/nginx.conf.template
 
 EXPOSE 80
 
-# Use a shell script to replace placeholder and start nginx
-CMD ["/bin/sh", "-c", "sed -i \"s|__API_URL__|${API_URL}|g\" /etc/nginx/nginx.conf.template && cp /etc/nginx/nginx.conf.template /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+# Use a shell script to replace placeholders (API URL and DNS Resolver) and start nginx
+CMD ["/bin/sh", "-c", "export NAMESERVER=$(grep nameserver /etc/resolv.conf | awk '{print $2}' | head -n 1) && sed -i \"s|__API_URL__|${API_URL}|g\" /etc/nginx/nginx.conf.template && sed -i \"s|__NAMESERVER__|${NAMESERVER}|g\" /etc/nginx/nginx.conf.template && cp /etc/nginx/nginx.conf.template /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
