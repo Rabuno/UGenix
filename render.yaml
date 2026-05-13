@@ -32,6 +32,11 @@ services:
           type: web
           name: ugenix-api
           property: host
+      - key: API_URL
+        fromService:
+          type: web
+          name: ugenix-api
+          property: host
     # Nginx acts as the entry point here
 
   # 3. Redis (Cache)
