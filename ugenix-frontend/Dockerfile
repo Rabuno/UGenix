@@ -9,16 +9,12 @@ RUN npm run build
 # Production Stage
 FROM nginx:alpine
 
-# Set default API URL if not provided
-ENV API_URL=http://ugenix-api:8080
-
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Use a template for Nginx config to allow environment variable injection
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+# Copy nginx config directly to a temporary location
+COPY nginx.conf /etc/nginx/nginx.conf.template
 
 EXPOSE 80
 
-# Nginx Alpine image automatically runs envsubst on files in /etc/nginx/templates/*.template 
-# and outputs them to /etc/nginx/conf.d/ before starting nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Use a shell script to replace placeholder and start nginx
+CMD ["/bin/sh", "-c", "sed -i \"s|__API_URL__|${API_URL}|g\" /etc/nginx/nginx.conf.template && cp /etc/nginx/nginx.conf.template /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
