@@ -2,11 +2,16 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Map, Ticket, User, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
+import { ActiveOverlay } from '../../store/ui.store';
 
-export default function Navbar() {
+interface NavbarProps {
+  onOpenOverlay: (type: ActiveOverlay) => void;
+}
+
+export default function Navbar({ onOpenOverlay }: NavbarProps) {
   const navItems = [
     { to: '/discovery', icon: Map, label: 'Discovery' },
-    { to: '/vouchers', icon: Ticket, label: 'Marketplace' },
+    { to: '/marketplace', icon: Ticket, label: 'Marketplace' },
     { to: '/profile', icon: User, label: 'Profile' },
   ];
 
@@ -22,25 +27,38 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) => clsx(
-                "flex items-center gap-2 text-sm font-medium transition-colors hover:text-indigo-400",
-                isActive ? "text-indigo-400" : "text-gray-400"
-              )}
-            >
-              <item.icon className="w-4 h-4" />
-              {item.label}
-            </NavLink>
+            item.to ? (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => clsx(
+                  "flex items-center gap-2 text-sm font-medium transition-colors hover:text-indigo-400",
+                  isActive ? "text-indigo-400" : "text-gray-400"
+                )}
+              >
+                <item.icon className="w-4 h-4" />
+                {item.label}
+              </NavLink>
+            ) : (
+              <button
+                key={item.type}
+                onClick={() => onOpenOverlay(item.type as ActiveOverlay)}
+                className="flex items-center gap-2 text-sm font-medium transition-colors text-gray-400 hover:text-indigo-400"
+              >
+                <item.icon className="w-4 h-4" />
+                {item.label}
+              </button>
+            )
           ))}
         </div>
 
-        <button className="btn-primary py-1.5 px-4 text-xs">
+        <button 
+          onClick={() => onOpenOverlay('auth')}
+          className="btn-primary py-1.5 px-4 text-xs"
+        >
           Connect Wallet
         </button>
       </div>
     </nav>
   );
 }
-

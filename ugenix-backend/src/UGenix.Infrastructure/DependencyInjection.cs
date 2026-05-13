@@ -30,8 +30,16 @@ public static class DependencyInjection
         });
         services.AddSingleton<ICacheService, RedisCacheService>();
 
+        // Security
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+
+        // Shared Services
+        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+        services.AddScoped<ICurrentUser, WebCurrentUser>();
+
         // Auth
         services.AddSingleton<IJwtService, JwtService>();
+        services.AddHttpContextAccessor();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -50,5 +58,19 @@ public static class DependencyInjection
 
         return services;
     }
+}
+
+public class WebCurrentUser(Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor) : ICurrentUser
+{
+    public Guid UserId
+    {
+        get
+        {
+            var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            return Guid.TryParse(userIdClaim, out var guid) ? guid : Guid.Empty;
+        }
+    }
+
+    public string Email => httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? string.Empty;
 }
 

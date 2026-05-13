@@ -63,5 +63,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// 6. Database Initialization (Development only)
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var passwordHasher = scope.ServiceProvider.GetRequiredService<UGenix.Infrastructure.Security.IPasswordHasher>();
+    
+    // Apply migrations
+    await Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.MigrateAsync(context.Database);
+    
+    // Seed data
+    await DatabaseSeeder.SeedAsync(context, passwordHasher);
+}
+
 app.Run();
 
