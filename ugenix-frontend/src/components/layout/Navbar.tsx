@@ -8,8 +8,15 @@ interface NavbarProps {
   onOpenOverlay: (type: ActiveOverlay) => void;
 }
 
+interface NavItem {
+  to?: string;
+  type?: ActiveOverlay;
+  icon: any;
+  label: string;
+}
+
 export default function Navbar({ onOpenOverlay }: NavbarProps) {
-  const navItems = [
+  const navItems: NavItem[] = [
     { to: '/discovery', icon: Map, label: 'Discovery' },
     { to: '/marketplace', icon: Ticket, label: 'Marketplace' },
     { to: '/profile', icon: User, label: 'Profile' },
