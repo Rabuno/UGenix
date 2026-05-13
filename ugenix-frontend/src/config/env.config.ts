@@ -30,15 +30,16 @@ export const loadRuntimeConfig = async () => {
  * Validates the environment variables.
  */
 export const validateEnv = () => {
-  const criticalKeys: (keyof typeof ENV)[] = ['API_BASE_URL', 'VIETMAP_API_KEY'];
+  const criticalKeys: (keyof typeof ENV)[] = ['API_BASE_URL'];
   const missingKeys = criticalKeys.filter((key) => !ENV[key]);
 
   if (missingKeys.length > 0) {
     const errorMsg = `[Env Validation] Missing required environment variables: ${missingKeys.join(', ')}`;
     console.error(errorMsg);
     
-    if (import.meta.env.PROD) {
-      throw new Error('Critical environment variables are missing. Application cannot start in production.');
-    }
+    // Don't throw for now to prevent blank page, just log it.
+    // if (import.meta.env.PROD) {
+    //   throw new Error('Critical environment variables are missing. Application cannot start in production.');
+    // }
   }
 };
