@@ -22,6 +22,8 @@ services:
           type: redis
           name: ugenix-redis
           property: internalConnectionString
+    envVarGroups:
+      - ugenix-shared-env
 
   # 2. Frontend + Nginx (Dockerized)
   - type: web
