@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Serilog;
 using UGenix.API.Extensions;
 using UGenix.API.Middleware;
 using UGenix.Application;
@@ -7,6 +8,10 @@ using UGenix.Infrastructure;
 using UGenix.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog Configuration
+builder.Host.UseSerilog((context, loggerConfig) => 
+    loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 // 1. Core Services Integration
 builder.Services

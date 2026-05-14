@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UGenix.Infrastructure.Options;
 using UGenix.Application.Abstractions;
+using UGenix.Persistence;
 
 namespace UGenix.Infrastructure;
 
@@ -60,7 +61,7 @@ public static class DependencyInjection
 
         // Health Checks
         services.AddHealthChecks()
-            .AddNpgsql(configuration.GetConnectionString("PostgreSQL") ?? string.Empty, name: "database")
+            .AddDbContextCheck<ApplicationDbContext>(name: "postgres")
             .AddRedis(configuration.GetConnectionString("Redis") ?? string.Empty, name: "redis");
 
         return services;
