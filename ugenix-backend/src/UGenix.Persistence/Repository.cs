@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using UGenix.Shared.Abstractions;
 
@@ -15,6 +16,17 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         return await _dbContext.Set<T>().FindAsync(new object[] { id }, ct);
+    }
+
+    public async Task<T?> GetByEmailAsync(string email, CancellationToken ct = default)
+    {
+        return await _dbContext.Set<T>()
+            .FirstOrDefaultAsync(e => EF.Property<string>(e, "Email") == email, ct);
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default)
+    {
+        return await _dbContext.Set<T>().AnyAsync(predicate, ct);
     }
 
     public async Task AddAsync(T entity, CancellationToken ct = default)
