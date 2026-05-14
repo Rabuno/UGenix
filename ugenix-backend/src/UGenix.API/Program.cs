@@ -61,7 +61,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("DefaultPolicy");
-app.UseHttpsRedirection();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -69,10 +68,9 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-// 6. Database Initialization (Development only)
-if (app.Environment.IsDevelopment())
+// 6. Database Initialization
+using (var scope = app.Services.CreateScope())
 {
-    using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var passwordHasher = scope.ServiceProvider.GetRequiredService<UGenix.Shared.Abstractions.IPasswordHasher>();
     
