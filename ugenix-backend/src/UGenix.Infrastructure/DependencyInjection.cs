@@ -58,6 +58,11 @@ public static class DependencyInjection
                 };
             });
 
+        // Health Checks
+        services.AddHealthChecks()
+            .AddNpgsql(configuration.GetConnectionString("PostgreSQL") ?? string.Empty, name: "database")
+            .AddRedis(configuration.GetConnectionString("Redis") ?? string.Empty, name: "redis");
+
         return services;
     }
 }

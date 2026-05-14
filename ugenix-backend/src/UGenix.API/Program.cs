@@ -62,6 +62,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 // 6. Database Initialization (Development only)
 if (app.Environment.IsDevelopment())
