@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { MapPin, Star, Search, Sliders } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { discoveryApi, DiscoveryPlace } from './discovery.api';
 import { useDiscoveryStore } from './discovery.store';
 import MapView from './components/MapView';
+import { Button } from '../../components/ui/Button';
+import { Card, CardContent } from '../../components/ui/Card';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 export default function DiscoveryPage() {
   const { radius, setRadius, setResults, center, setCenter } = useDiscoveryStore();
   
-  // Set default center if not exists
   useEffect(() => {
     if (!center) {
       setCenter(10.762622, 106.660172);
@@ -28,18 +31,22 @@ export default function DiscoveryPage() {
   }, [data, setResults]);
 
   return (
-    <div className="h-[calc(100vh-120px)] flex flex-col gap-6 animate-in fade-in duration-700">
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="h-[calc(100vh-120px)] flex flex-col gap-6"
+    >
       {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 shrink-0">
-        <div className="space-y-1">
-          <h2 className="text-3xl font-bold tracking-tight">Nearby Discovery</h2>
-          <p className="text-gray-400 text-sm">Spatial search powered by VietMap Intelligence.</p>
+        <div className="space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-50">Nearby Discovery</h2>
+          <p className="text-slate-400 text-sm">Spatial search powered by VietMap Intelligence.</p>
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="glass-card flex items-center px-4 py-2 gap-3">
-            <Sliders className="w-4 h-4 text-indigo-400" />
-            <span className="text-sm font-medium whitespace-nowrap">{radius / 1000}km</span>
+          <Card className="flex items-center px-4 py-2 gap-3 h-12 shadow-none">
+            <Sliders className="w-4 h-4 text-violet-400" />
+            <span className="text-sm font-medium whitespace-nowrap text-slate-200">{radius / 1000}km</span>
             <input 
               type="range" 
               min="1000" 
@@ -47,64 +54,85 @@ export default function DiscoveryPage() {
               step="1000"
               value={radius}
               onChange={(e) => setRadius(parseInt(e.target.value))}
-              className="w-24 h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              className="w-24 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-violet-500"
             />
-          </div>
-          <button onClick={() => refetch()} className="btn-primary flex items-center gap-2">
+          </Card>
+          <Button onClick={() => refetch()} className="flex items-center gap-2 h-12">
             <Search className="w-4 h-4" />
             <span>Search</span>
-          </button>
+          </Button>
         </div>
       </header>
 
       {/* Split Layout Container */}
       <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
         {/* Map Section (60%) */}
-        <div className="lg:w-3/5 h-[400px] lg:h-full glass-card overflow-hidden relative">
+        <Card className="lg:w-3/5 h-[400px] lg:h-full overflow-hidden relative shadow-md">
           <MapView />
-        </div>
+        </Card>
 
         {/* List Section (40%) */}
         <div className="lg:w-2/5 flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
           {isLoading ? (
-            [...Array(3)].map((_, i) => (
-              <div key={i} className="glass-card h-32 shrink-0 animate-pulse bg-white/5" />
+            [...Array(4)].map((_, i) => (
+              <Card key={i} className="shadow-none border-slate-800/50">
+                <CardContent className="p-4 flex gap-4">
+                  <Skeleton className="w-24 h-24 rounded-xl shrink-0" />
+                  <div className="flex-1 space-y-3 py-1">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/4" />
+                    <Skeleton className="h-3 w-full mt-4" />
+                    <Skeleton className="h-3 w-5/6" />
+                  </div>
+                </CardContent>
+              </Card>
             ))
           ) : error ? (
-            <div className="glass-card p-12 text-center text-red-400">
-              Error loading results.
-            </div>
+            <Card className="border-red-500/20 bg-red-500/5">
+              <CardContent className="p-12 text-center text-red-400 font-medium">
+                Error loading results. Please try again.
+              </CardContent>
+            </Card>
           ) : (
-            data?.items.map((place) => (
-              <PlaceListCard key={place.id} place={place} />
+            data?.items.map((place, i) => (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05 }}
+                key={place.id}
+              >
+                <PlaceListCard place={place} />
+              </motion.div>
             ))
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 function PlaceListCard({ place }: { place: DiscoveryPlace }) {
   return (
-    <div className="glass-card p-4 flex gap-4 hover:border-indigo-500/50 transition-all cursor-pointer group">
-      <div className="w-24 h-24 bg-indigo-900/20 rounded-xl shrink-0 flex items-center justify-center">
-        <MapPin className="w-8 h-8 text-indigo-500/50" />
-      </div>
-      <div className="flex-1 space-y-2">
-        <div className="flex justify-between items-start">
-          <h3 className="font-bold text-lg group-hover:text-indigo-400 transition-colors">{place.name}</h3>
-          <span className="text-[10px] text-indigo-400 font-bold bg-indigo-400/10 px-2 py-0.5 rounded">
-            {(place.distanceMeters / 1000).toFixed(1)}km
-          </span>
+    <Card className="group cursor-pointer hover:border-violet-500/50 shadow-none">
+      <CardContent className="p-4 flex gap-4">
+        <div className="w-24 h-24 bg-surface rounded-xl shrink-0 flex items-center justify-center border border-slate-800 group-hover:bg-violet-900/20 group-hover:border-violet-500/30 transition-all">
+          <MapPin className="w-8 h-8 text-violet-500/50 group-hover:text-violet-400 transition-colors" />
         </div>
-        <div className="flex items-center gap-1">
-          <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-          <span className="text-sm font-bold">{place.averageRating}</span>
-          <span className="text-gray-500 text-[10px]">({place.reviewCount})</span>
+        <div className="flex-1 space-y-2">
+          <div className="flex justify-between items-start">
+            <h3 className="font-bold text-lg text-slate-50 group-hover:text-violet-400 transition-colors line-clamp-1">{place.name}</h3>
+            <span className="text-[10px] text-violet-300 font-bold bg-violet-500/20 px-2 py-1 rounded-md shrink-0 ml-2">
+              {(place.distanceMeters / 1000).toFixed(1)}km
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+            <span className="text-sm font-bold text-slate-200">{place.averageRating}</span>
+            <span className="text-slate-500 text-xs">({place.reviewCount} reviews)</span>
+          </div>
+          <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed">{place.description}</p>
         </div>
-        <p className="text-gray-400 text-xs line-clamp-1">{place.description}</p>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

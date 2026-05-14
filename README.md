@@ -6,6 +6,7 @@ UGenix is a production-grade platform engineered for real-time spatial discovery
 ![Backend](https://img.shields.io/badge/Backend-.NET_9-512bd4?style=for-the-badge&logo=dotnet)
 ![Frontend](https://img.shields.io/badge/Frontend-React_18-61dafb?style=for-the-badge&logo=react)
 ![Database](https://img.shields.io/badge/Database-PostGIS-336791?style=for-the-badge&logo=postgresql)
+![UI/UX](https://img.shields.io/badge/UI_UX-Elegant_Amethyst-8b5cf6?style=for-the-badge&logo=tailwindcss)
 
 ---
 
@@ -19,6 +20,17 @@ UGenix is a production-grade platform engineered for real-time spatial discovery
 
 ---
 
+## 🎨 Elegant Amethyst UI
+
+The frontend utilizes a custom **"Elegant Amethyst"** design system:
+- **Premium Aesthetics**: Deep Slate backgrounds paired with vibrant Violet gradients.
+- **Atomic Components**: Reusable `Button`, `Input`, `Card`, and `Modal` primitives.
+- **Smooth Interactions**: Powered by `framer-motion` for fluid page transitions and interactive states.
+- **Accessibility (a11y)**: Built-in focus management, ARIA labels, and high-contrast visuals.
+- **Polished UX**: Interactive feedback with Skeleton loaders and Toasts.
+
+---
+
 ## 🏗️ Technical Stack
 
 ### Backend
@@ -29,6 +41,7 @@ UGenix is a production-grade platform engineered for real-time spatial discovery
 
 ### Frontend
 - **Runtime**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS + Framer Motion
 - **State**: Zustand (Atomic store)
 - **Data Flow**: TanStack Query (SWR pattern)
 - **Maps**: VietMap GL SDK (WebGL optimized)
@@ -64,9 +77,9 @@ UGenix is built for production from day one:
 - [x] Phase 1-8: Core Business Features
 - [x] Phase 9: Governance & Type-Safety
 - [x] Phase 10: Production Hardening
-- [ ] Phase 11: Real-time Analytics & OTel Dashboards
+- [x] Phase 11: UI/UX Reconstruction (Elegant Amethyst)
+- [ ] Phase 12: Real-time Analytics & OTel Dashboards
 
 ---
 
 Developed by **Lead Staff Engineer** @ UGenix Team.
-
