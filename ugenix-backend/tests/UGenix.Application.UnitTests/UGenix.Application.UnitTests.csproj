@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\UGenix.Application\UGenix.Application.csproj" />
+    <ProjectReference Include="..\..\src\UGenix.Infrastructure\UGenix.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
