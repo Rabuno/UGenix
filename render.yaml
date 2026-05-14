@@ -16,12 +16,12 @@ services:
       - key: ConnectionStrings__Database
         fromDatabase:
           name: ugenix-db
-          property: connectionString
+          property: internalConnectionString
       - key: ConnectionStrings__Redis
         fromService:
           type: redis
           name: ugenix-redis
-          property: connectionString
+          property: internalConnectionString
 
   # 2. Frontend + Nginx (Dockerized)
   - type: web

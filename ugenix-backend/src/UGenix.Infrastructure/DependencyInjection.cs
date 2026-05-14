@@ -25,10 +25,23 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        var redisConnectionString = configuration.GetConnectionString("Redis") ?? string.Empty;
+        if (!string.IsNullOrEmpty(redisConnectionString) && redisConnectionString.StartsWith("redis://"))
+        {
+            var uri = new Uri(redisConnectionString);
+            var userInfo = uri.UserInfo.Split(':');
+            var password = userInfo.Length > 1 ? userInfo[1] : string.Empty;
+            redisConnectionString = $"{uri.Host}:{uri.Port}";
+            if (!string.IsNullOrEmpty(password))
+            {
+                redisConnectionString += $",password={password}";
+            }
+        }
+
         // Caching
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = configuration.GetConnectionString("Redis");
+            options.Configuration = redisConnectionString;
         });
         services.AddSingleton<ICacheService, RedisCacheService>();
 
@@ -62,7 +75,7 @@ public static class DependencyInjection
         // Health Checks
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>(name: "postgres")
-            .AddRedis(configuration.GetConnectionString("Redis") ?? string.Empty, name: "redis");
+            .AddRedis(redisConnectionString, name: "redis");
 
         return services;
     }

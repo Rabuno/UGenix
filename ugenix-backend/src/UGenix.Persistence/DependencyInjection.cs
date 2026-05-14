@@ -14,6 +14,24 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Database");
 
+        // Handle Render's postgres:// URLs
+        if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres"))
+        {
+            var uri = new Uri(connectionString);
+            var userInfo = uri.UserInfo.Split(':');
+            var builder = new Npgsql.NpgsqlConnectionStringBuilder
+            {
+                Host = uri.Host,
+                Port = uri.IsDefaultPort ? 5432 : uri.Port,
+                Database = uri.AbsolutePath.TrimStart('/'),
+                Username = userInfo[0],
+                Password = userInfo.Length > 1 ? userInfo[1] : string.Empty,
+                SslMode = Npgsql.SslMode.Prefer,
+                TrustServerCertificate = true
+            };
+            connectionString = builder.ToString();
+        }
+
         services.AddSingleton<SoftDeleteInterceptor>();
         services.AddScoped<EntityAuditInterceptor>();
         services.AddSingleton<QueryGovernanceInterceptor>();
