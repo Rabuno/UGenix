@@ -61,6 +61,9 @@ services:
       - .env
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__PostgreSQL: Host=ugenix-db;Database=${POSTGRES_DATABASE};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__Redis: ugenix-redis:6379
+      Serilog__WriteTo__1__Args__serverUrl: http://ugenix-seq:80
     security_opt:
       - no-new-privileges:true
     read_only: true
