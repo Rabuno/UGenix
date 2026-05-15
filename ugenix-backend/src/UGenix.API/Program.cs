@@ -6,12 +6,19 @@ using UGenix.API.Middleware;
 using UGenix.Application;
 using UGenix.Infrastructure;
 using UGenix.Persistence;
+using UGenix.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Serilog Configuration
 builder.Host.UseSerilog((context, loggerConfig) => 
     loggerConfig.ReadFrom.Configuration(context.Configuration));
+
+// Production-specific configuration overrides & validation
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddProductionConfiguration(builder.Configuration);
+}
 
 // 1. Core Services Integration
 builder.Services

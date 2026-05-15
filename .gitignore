@@ -6,9 +6,10 @@ Thumbs.db
 # [Backend]
 **/bin/
 **/obj/
-**/appsettings.Development.json
+**/appsettings.local.json
 **/.env
 **/.env.local
+**/.env.*.local
 **/.vs/
 **/.usersecrets/
 **/TestResults/

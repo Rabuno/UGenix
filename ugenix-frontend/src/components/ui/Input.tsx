@@ -22,7 +22,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-medium text-slate-400 uppercase tracking-wider"
+            className="block text-xs font-medium text-text-secondary uppercase tracking-wider"
           >
             {label}
           </label>
@@ -33,7 +33,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           aria-invalid={!!error}
           aria-describedby={error ? errorId : undefined}
           className={cn(
-            'flex h-12 w-full rounded-lg border border-slate-800 bg-surface px-4 py-2 text-white transition-all duration-200 placeholder:text-slate-500 focus-ring',
+            'flex h-12 w-full rounded-input border border-slate-800 bg-surface px-4 py-2 text-text-primary transition-all duration-200 placeholder:text-slate-500 focus-ring',
             error && 'border-red-500 ring-red-500/20',
             className
           )}
