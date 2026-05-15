@@ -85,7 +85,7 @@ public class GoogleAuthOptions
 public class RedisOptions
 {
     [Required]
-    public string ConnectionString { get; set; } = "localhost:6379";
+    public string ConnectionString { get; set; } = string.Empty;
 }
 
 public class ObservabilityOptions

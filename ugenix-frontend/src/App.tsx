@@ -3,6 +3,7 @@ import { Routes, Route, useSearchParams } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import DiscoveryPage from './features/discovery/DiscoveryPage';
 import HomePage from './features/home/HomePage';
+import DemoPage from './features/home/DemoPage';
 import AuthModal from './features/auth/AuthModal';
 import MarketplacePage from './features/vouchers/MarketplacePage';
 import ProfilePage from './features/profile/ProfilePage';
@@ -49,6 +50,7 @@ function App() {
       <main className="relative z-10 w-full max-w-7xl mx-auto px-6 py-10 flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/demo" element={<DemoPage />} />
           <Route 
             path="/discovery" 
             element={

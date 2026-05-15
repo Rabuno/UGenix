@@ -25,7 +25,9 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        var redisConnectionString = configuration.GetConnectionString("Redis") ?? string.Empty;
+        var redisConnectionString = configuration["REDIS_URL"] 
+                                   ?? configuration.GetConnectionString("Redis") 
+                                   ?? string.Empty;
         if (!string.IsNullOrEmpty(redisConnectionString) && redisConnectionString.StartsWith("redis://"))
         {
             var uri = new Uri(redisConnectionString);
@@ -57,18 +59,20 @@ public static class DependencyInjection
         services.AddSingleton<IJwtService, JwtService>();
         services.AddHttpContextAccessor();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            .AddJwtBearer();
+
+        services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+            .Configure<Microsoft.Extensions.Options.IOptions<JwtOptions>>((options, jwtOptions) =>
             {
-                var jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions?.Issuer,
-                    ValidAudience = jwtOptions?.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions?.Secret ?? string.Empty))
+                    ValidIssuer = jwtOptions.Value.Issuer,
+                    ValidAudience = jwtOptions.Value.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Secret))
                 };
             });
 

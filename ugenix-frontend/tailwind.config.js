@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+      },
       colors: {
         background: "#020617", // Slate-950
         surface: "#0f172a",    // Slate-900
@@ -18,6 +21,10 @@ export default {
           DEFAULT: "#8b5cf6",  // Violet-500
           glow: "rgba(139, 92, 246, 0.4)",
         },
+        text: {
+          primary: "#f8fafc",
+          secondary: "#94a3b8",
+        },
         violet: {
           700: "#6d28d9",
           800: "#5b21b6",
@@ -27,6 +34,7 @@ export default {
       borderRadius: {
         'button': '10px',
         'card': '16px',
+        'input': '8px',
       },
       zIndex: {
         'nav': '40',
