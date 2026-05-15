@@ -6,6 +6,7 @@ using UGenix.API.Middleware;
 using UGenix.Application;
 using UGenix.Infrastructure;
 using UGenix.Persistence;
+using UGenix.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,12 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddPersistence(builder.Configuration)
     .AddApplication();
+
+// Production-specific configuration overrides & validation
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddProductionConfiguration(builder.Configuration);
+}
 
 // 2. API Standard Services
 builder.Services.AddControllers();
