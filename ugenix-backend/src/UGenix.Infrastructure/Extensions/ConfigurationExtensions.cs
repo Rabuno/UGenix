@@ -23,15 +23,21 @@ public static class ConfigurationExtensions
 
         // 2. Critical Configuration (Fail-Fast, No Defaults)
         // Sync Postgres for AddPersistence (uses GetConnectionString("Database"))
-        if (configuration is IConfigurationRoot configurationRoot && !string.IsNullOrEmpty(configuration["POSTGRES_URL"]))
+        string? dbUrl = configuration["POSTGRES_URL"] ?? configuration["DATABASE_URL"] ?? configuration["DATABASE_PRIVATE_URL"];
+        if (configuration is IConfigurationRoot configurationRoot && !string.IsNullOrEmpty(dbUrl))
         {
-            configurationRoot["ConnectionStrings:Database"] = configuration["POSTGRES_URL"];
+            configurationRoot["ConnectionStrings:Database"] = dbUrl;
         }
 
         services.AddOptions<PostgresOptions>()
             .Bind(configuration.GetSection("Postgres"))
             .Configure(options => {
-                options.Url = configuration["POSTGRES_URL"] ?? configuration["DATABASE_URL"] ?? options.Url;
+                options.Url = configuration["POSTGRES_URL"] 
+                    ?? configuration["DATABASE_URL"] 
+                    ?? configuration["DATABASE_PRIVATE_URL"]
+                    ?? configuration.GetConnectionString("Database")
+                    ?? options.Url;
+                
                 options.Host = configuration["POSTGRES_HOST"] ?? options.Host;
                 options.Database = configuration["POSTGRES_DATABASE"] ?? options.Database;
                 options.User = configuration["POSTGRES_USER"] ?? options.User;
@@ -102,7 +108,8 @@ public static class ConfigurationExtensions
             .Bind(configuration.GetSection("Redis"))
             .Configure(options => {
                 options.ConnectionString = configuration["REDIS_URL"] 
-                                           ?? configuration["RedisOptions__ConnectionString"] 
+                                           ?? configuration["REDIS_PRIVATE_URL"]
+                                           ?? configuration.GetConnectionString("Redis")
                                            ?? options.ConnectionString;
             })
             .ValidateDataAnnotations();
