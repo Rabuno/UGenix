@@ -48,8 +48,7 @@ public static class ConfigurationExtensions
                 options.ServiceRoleKey = configuration["SUPABASE_SERVICE_ROLE_KEY"] ?? options.ServiceRoleKey;
                 options.JwtSecret = configuration["SUPABASE_JWT_SECRET"] ?? options.JwtSecret;
             })
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
 
         services.AddOptions<JwtOptions>()
             .Bind(configuration.GetSection("Jwt")) 
@@ -75,8 +74,7 @@ public static class ConfigurationExtensions
                 options.ApiKey = configuration["CLOUDINARY_API_KEY"] ?? options.ApiKey;
                 options.ApiSecret = configuration["CLOUDINARY_API_SECRET"] ?? options.ApiSecret;
             })
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
 
         services.AddOptions<MailOptions>()
             .Bind(configuration.GetSection("Mail"))
@@ -90,16 +88,14 @@ public static class ConfigurationExtensions
                 
                 options.DisplayName = configuration["MAIL_DISPLAY_NAME"] ?? options.DisplayName;
             })
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
 
         services.AddOptions<GoogleAuthOptions>()
             .Bind(configuration.GetSection("GoogleAuth"))
             .Configure(options => {
                 options.ClientId = configuration["GOOGLE_CLIENT_ID"] ?? options.ClientId;
             })
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
 
         // 4. Infrastructure & Redis (With local fallbacks if safe)
         services.AddOptions<RedisOptions>()
@@ -109,13 +105,11 @@ public static class ConfigurationExtensions
                                            ?? configuration["RedisOptions__ConnectionString"] 
                                            ?? options.ConnectionString;
             })
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
 
         services.AddOptions<ObservabilityOptions>()
             .Bind(configuration.GetSection("Observability"))
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+            .ValidateDataAnnotations();
 
         return services;
     }

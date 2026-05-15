@@ -14,7 +14,7 @@ public class PostgresOptions : ICriticalConfiguration
     // Operational Recovery: Startup Fail
 }
 
-public class SupabaseOptions : ICriticalConfiguration
+public class SupabaseOptions : ISensitiveConfiguration
 {
     [Required]
     public string Url { get; set; } = string.Empty;
