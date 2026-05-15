@@ -14,17 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, loggerConfig) => 
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-// 1. Core Services Integration
-builder.Services
-    .AddInfrastructure(builder.Configuration)
-    .AddPersistence(builder.Configuration)
-    .AddApplication();
-
 // Production-specific configuration overrides & validation
 if (builder.Environment.IsProduction())
 {
     builder.Services.AddProductionConfiguration(builder.Configuration);
 }
+
+// 1. Core Services Integration
+builder.Services
+    .AddInfrastructure(builder.Configuration)
+    .AddPersistence(builder.Configuration)
+    .AddApplication();
 
 // 2. API Standard Services
 builder.Services.AddControllers();

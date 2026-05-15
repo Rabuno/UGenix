@@ -22,32 +22,41 @@ public static class ConfigurationExtensions
         }
 
         // 2. Critical Configuration (Fail-Fast, No Defaults)
+        // Sync Postgres for AddPersistence (uses GetConnectionString("Database"))
+        if (configuration is IConfigurationRoot configurationRoot && !string.IsNullOrEmpty(configuration["POSTGRES_URL"]))
+        {
+            configurationRoot["ConnectionStrings:Database"] = configuration["POSTGRES_URL"];
+        }
+
         services.AddOptions<PostgresOptions>()
+            .Bind(configuration.GetSection("Postgres"))
             .Configure(options => {
-                options.Url = configuration["POSTGRES_URL"] ?? configuration["DATABASE_URL"] ?? string.Empty;
-                options.Host = configuration["POSTGRES_HOST"] ?? string.Empty;
-                options.Database = configuration["POSTGRES_DATABASE"] ?? string.Empty;
-                options.User = configuration["POSTGRES_USER"] ?? string.Empty;
-                options.Password = configuration["POSTGRES_PASSWORD"] ?? string.Empty;
+                options.Url = configuration["POSTGRES_URL"] ?? configuration["DATABASE_URL"] ?? options.Url;
+                options.Host = configuration["POSTGRES_HOST"] ?? options.Host;
+                options.Database = configuration["POSTGRES_DATABASE"] ?? options.Database;
+                options.User = configuration["POSTGRES_USER"] ?? options.User;
+                options.Password = configuration["POSTGRES_PASSWORD"] ?? options.Password;
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
         services.AddOptions<SupabaseOptions>()
+            .Bind(configuration.GetSection("Supabase"))
             .Configure(options => {
-                options.Url = configuration["SUPABASE_URL"] ?? string.Empty;
-                options.AnonKey = configuration["SUPABASE_ANON_KEY"] ?? string.Empty;
-                options.ServiceRoleKey = configuration["SUPABASE_SERVICE_ROLE_KEY"] ?? string.Empty;
-                options.JwtSecret = configuration["SUPABASE_JWT_SECRET"] ?? string.Empty;
+                options.Url = configuration["SUPABASE_URL"] ?? options.Url;
+                options.AnonKey = configuration["SUPABASE_ANON_KEY"] ?? options.AnonKey;
+                options.ServiceRoleKey = configuration["SUPABASE_SERVICE_ROLE_KEY"] ?? options.ServiceRoleKey;
+                options.JwtSecret = configuration["SUPABASE_JWT_SECRET"] ?? options.JwtSecret;
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
         services.AddOptions<JwtOptions>()
+            .Bind(configuration.GetSection("Jwt")) 
             .Configure(options => {
-                options.Secret = configuration["JWT_SECRET"] ?? configuration["Jwt:Secret"] ?? string.Empty;
-                options.Issuer = configuration["JWT_ISSUER"] ?? configuration["Jwt:Issuer"] ?? string.Empty;
-                options.Audience = configuration["JWT_AUDIENCE"] ?? configuration["Jwt:Audience"] ?? string.Empty;
+                options.Secret = configuration["JWT_SECRET"] ?? options.Secret;
+                options.Issuer = configuration["JWT_ISSUER"] ?? options.Issuer;
+                options.Audience = configuration["JWT_AUDIENCE"] ?? options.Audience;
                 
                 if (int.TryParse(configuration["JWT_ACCESS_TOKEN_EXPIRATION_MINUTES"], out int accessExp))
                     options.AccessTokenExpirationMinutes = accessExp;
@@ -55,56 +64,58 @@ public static class ConfigurationExtensions
                 if (int.TryParse(configuration["JWT_REFRESH_TOKEN_EXPIRATION_DAYS"], out int refreshExp))
                     options.RefreshTokenExpirationDays = refreshExp;
             })
-            .Bind(configuration.GetSection("Jwt")) 
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
         // 3. Sensitive Configuration (Support Hot Reload / IOptionsMonitor)
         services.AddOptions<CloudinaryOptions>()
-            .Configure(options => {
-                options.CloudName = configuration["CLOUDINARY_CLOUD_NAME"] ?? configuration["Cloudinary:CloudName"] ?? string.Empty;
-                options.ApiKey = configuration["CLOUDINARY_API_KEY"] ?? configuration["Cloudinary:ApiKey"] ?? string.Empty;
-                options.ApiSecret = configuration["CLOUDINARY_API_SECRET"] ?? configuration["Cloudinary:ApiSecret"] ?? string.Empty;
-            })
             .Bind(configuration.GetSection("Cloudinary"))
+            .Configure(options => {
+                options.CloudName = configuration["CLOUDINARY_CLOUD_NAME"] ?? options.CloudName;
+                options.ApiKey = configuration["CLOUDINARY_API_KEY"] ?? options.ApiKey;
+                options.ApiSecret = configuration["CLOUDINARY_API_SECRET"] ?? options.ApiSecret;
+            })
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
         services.AddOptions<MailOptions>()
+            .Bind(configuration.GetSection("Mail"))
             .Configure(options => {
-                options.Mail = configuration["MAIL_USER"] ?? configuration["Mail:Mail"] ?? string.Empty;
-                options.Password = configuration["MAIL_PASSWORD"] ?? configuration["Mail:Password"] ?? string.Empty;
-                options.Host = configuration["MAIL_HOST"] ?? configuration["Mail:Host"] ?? string.Empty;
+                options.Mail = configuration["MAIL_USER"] ?? options.Mail;
+                options.Password = configuration["MAIL_PASSWORD"] ?? options.Password;
+                options.Host = configuration["MAIL_HOST"] ?? options.Host;
                 
                 if (int.TryParse(configuration["MAIL_PORT"], out int port))
                     options.Port = port;
                 
-                options.DisplayName = configuration["MAIL_DISPLAY_NAME"] ?? configuration["Mail:DisplayName"] ?? "UGenix";
+                options.DisplayName = configuration["MAIL_DISPLAY_NAME"] ?? options.DisplayName;
             })
-            .Bind(configuration.GetSection("Mail"))
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
         services.AddOptions<GoogleAuthOptions>()
-            .Configure(options => {
-                options.ClientId = configuration["GOOGLE_CLIENT_ID"] ?? configuration["GoogleAuth:ClientId"] ?? string.Empty;
-            })
             .Bind(configuration.GetSection("GoogleAuth"))
-            .ValidateDataAnnotations();
+            .Configure(options => {
+                options.ClientId = configuration["GOOGLE_CLIENT_ID"] ?? options.ClientId;
+            })
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         // 4. Infrastructure & Redis (With local fallbacks if safe)
         services.AddOptions<RedisOptions>()
+            .Bind(configuration.GetSection("Redis"))
             .Configure(options => {
                 options.ConnectionString = configuration["REDIS_URL"] 
                                            ?? configuration["RedisOptions__ConnectionString"] 
-                                           ?? "localhost:6379";
+                                           ?? options.ConnectionString;
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
         services.AddOptions<ObservabilityOptions>()
             .Bind(configuration.GetSection("Observability"))
-            .ValidateDataAnnotations();
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         return services;
     }
