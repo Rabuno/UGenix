@@ -22,8 +22,11 @@ services:
           type: redis
           name: ugenix-redis
           property: internalConnectionString
-    envVarGroups:
-      - ugenix-shared-env
+      # Import all shared variables (JWT, Cloudinary, etc.)
+      - fromGroup: ugenix-shared-env
+      # Standard production CORS
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false # Set this to your frontend URL in Render dashboard
 
   # 2. Frontend + Nginx (Dockerized)
   - type: web
@@ -34,13 +37,13 @@ services:
     plan: free
     envVars:
       - key: VITE_API_BASE_URL
-        value: /api
-      - key: API_URL
         fromService:
           type: web
           name: ugenix-api
           property: hostport
-    # Nginx acts as the entry point here
+      - key: VITE_API_VERSION
+        value: v1
+      - fromGroup: ugenix-frontend-env
 
   # 3. Redis (Cache)
   - type: redis
@@ -55,3 +58,48 @@ databases:
     databaseName: ugenix
     user: ugenix_admin
 
+envVarGroups:
+  - name: ugenix-shared-env
+    envVars:
+      # [JWT Identity]
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_ISSUER
+        value: UGenix.API
+      - key: JWT_AUDIENCE
+        value: UGenix.Frontend
+      - key: JWT_ACCESS_TOKEN_EXPIRATION_MINUTES
+        value: "120"
+      
+      # [Cloudinary]
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # [Mail]
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_DISPLAY_NAME
+        value: UGenix Platform
+
+      # [Google Auth]
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+
+  - name: ugenix-frontend-env
+    envVars:
+      - key: VITE_VIETMAP_API_KEY
+        sync: false
+      - key: VITE_VIETMAP_TILE_KEY
+        sync: false
+      - key: VITE_VIETMAP_SERVICE_KEY
+        sync: false
