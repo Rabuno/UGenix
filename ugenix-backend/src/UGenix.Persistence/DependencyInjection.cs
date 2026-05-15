@@ -26,8 +26,7 @@ public static class DependencyInjection
                 Database = uri.AbsolutePath.TrimStart('/'),
                 Username = userInfo[0],
                 Password = userInfo.Length > 1 ? userInfo[1] : string.Empty,
-                SslMode = Npgsql.SslMode.Prefer,
-                TrustServerCertificate = true
+                SslMode = Npgsql.SslMode.Prefer
             };
             connectionString = builder.ToString();
         }

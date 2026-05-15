@@ -55,7 +55,8 @@ public class Result<TValue> : Result
         ? _value!
         : throw new InvalidOperationException("Failure result has no value.");
 
-    public static implicit operator Result<TValue>(TValue? value) => Success(value);
+    public static implicit operator Result<TValue>(TValue? value) => 
+        value is not null ? Success(value) : Failure(Error.NullValue);
     public static Result<TValue> Success(TValue value) => new(value, true, Error.None);
     public static new Result<TValue> Failure(Error error) => new(default, false, error);
 }

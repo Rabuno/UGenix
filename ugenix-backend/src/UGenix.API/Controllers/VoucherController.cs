@@ -13,7 +13,8 @@ public class VoucherController(MediatR.ISender mediator) : BaseApiController(med
     /// Get available vouchers for a specific restaurant.
     /// </summary>
     [HttpGet("restaurant/{restaurantId}")]
-    public async Task<IActionResult> GetByRestaurant(Guid restaurantId)
+    [AllowAnonymous]
+    public IActionResult GetByRestaurant(Guid restaurantId)
     {
         // Mocking retrieval for now
         var vouchers = new List<Voucher>
@@ -28,7 +29,7 @@ public class VoucherController(MediatR.ISender mediator) : BaseApiController(med
     /// </summary>
     [HttpPost("purchase")]
     [Authorize]
-    public async Task<IActionResult> Purchase([FromBody] PurchaseRequest request)
+    public IActionResult Purchase([FromBody] PurchaseRequest request)
     {
         // 1. Logic would involve MediatR command
         // 2. Load Voucher -> Purchase() -> Create Order -> Save Changes
