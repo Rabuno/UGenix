@@ -1,7 +1,7 @@
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Card, CardHeader, CardContent, CardFooter } from "../../components/ui/Card";
-import { Search, MapPin, Star, Zap } from "lucide-react";
+import { MapPin, Star, Zap } from "lucide-react";
 
 export default function DemoPage() {
   return (
