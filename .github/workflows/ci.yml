@@ -10,11 +10,13 @@ jobs:
   backend-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
+          cache: true
+          cache-dependency-path: ugenix-backend/packages.lock.json # Or fallback to project file
       - name: Restore dependencies
         run: dotnet restore ugenix-backend/UGenix.sln
       - name: Build
@@ -25,13 +27,15 @@ jobs:
   frontend-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: ugenix-frontend/package-lock.json
       - name: Install dependencies
-        run: cd ugenix-frontend && npm install
+        run: cd ugenix-frontend && npm ci
       - name: Lint
         run: cd ugenix-frontend && npm run lint
       - name: Unit Tests
