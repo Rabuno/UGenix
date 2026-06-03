@@ -22,15 +22,24 @@ public class DiscoveryController(MediatR.ISender mediator) : BaseApiController(m
         [FromQuery] string? cursor = null, 
         [FromQuery] int limit = 20)
     {
-        var query = new GetNearbyRestaurantsQuery(
-            lat, 
-            lng, 
-            radius, 
-            new CursorPaginationRequest(cursor != null ? new Cursor(cursor) : null, null, limit));
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            var query = new GetNearbyRestaurantsQuery(
+                lat, 
+                lng, 
+                radius, 
+                new CursorPaginationRequest(cursor != null ? new Cursor(cursor) : null, null, limit));
 
-        var result = await Mediator.Send(query);
+            var result = await Mediator.Send(query);
 
-        return HandleResult<PagedList<DiscoveryReadModel>>(result);
+            return HandleResult<PagedList<DiscoveryReadModel>>(result);
+        }
+        finally
+        {
+            sw.Stop();
+            UGenix.Infrastructure.Diagnostics.UgenixMetrics.SpatialSearchDuration.Record(sw.Elapsed.TotalMilliseconds);
+        }
     }
 }
 

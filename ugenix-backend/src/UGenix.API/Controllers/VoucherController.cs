@@ -34,6 +34,11 @@ public class VoucherController(MediatR.ISender mediator) : BaseApiController(med
         // 1. Logic would involve MediatR command
         // 2. Load Voucher -> Purchase() -> Create Order -> Save Changes
         var orderId = Guid.NewGuid();
+
+        // Increment business metrics
+        UGenix.Infrastructure.Diagnostics.UgenixMetrics.VouchersPurchased.Add(1, 
+            new KeyValuePair<string, object?>("voucher.id", request.VoucherId));
+
         return Ok(new { OrderId = orderId, Status = "Pending" });
     }
 }

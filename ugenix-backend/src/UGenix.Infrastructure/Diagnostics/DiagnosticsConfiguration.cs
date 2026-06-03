@@ -1,5 +1,6 @@
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -21,12 +22,22 @@ public static class DiagnosticsConfiguration
                 .CreateLogger());
         });
 
-        // 2. OpenTelemetry Tracing (core instrumentation only - no beta packages)
+        // 2. OpenTelemetry Tracing & Metrics
         services.AddOpenTelemetry()
             .WithTracing(tracing => tracing
                 .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
+                .AddEntityFrameworkCoreInstrumentation()
+                .AddRedisInstrumentation()
+                .AddOtlpExporter())
+            .WithMetrics(metrics => metrics
+                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName))
+                .AddMeter(UgenixMetrics.MeterName)
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddProcessInstrumentation()
                 .AddOtlpExporter());
 
         return services;
